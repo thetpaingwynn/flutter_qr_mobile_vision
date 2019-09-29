@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -184,6 +185,29 @@ class QrCameraC1 implements QrCamera {
         camera.stopPreview();
         camera.setPreviewCallback(null);
         camera.release();
+    }
+
+    @Override
+    public void toggleFlash() {
+        Camera.Parameters p = camera.getParameters();
+
+        switch (p.getFlashMode()) {
+            case Camera.Parameters.FLASH_MODE_ON:
+            case Camera.Parameters.FLASH_MODE_TORCH:
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                break;
+            case Camera.Parameters.FLASH_MODE_OFF:
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                break;
+            case Camera.Parameters.FLASH_MODE_AUTO:
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_ON);
+                break;
+            default:
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+                break;
+        }
+
+        camera.setParameters(p);
     }
 
     //Size here is Camera.Size, not android.util.Size as in the QrCameraC2 version of this method

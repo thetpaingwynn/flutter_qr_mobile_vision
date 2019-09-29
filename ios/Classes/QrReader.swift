@@ -164,6 +164,18 @@ class QrReader: NSObject {
     textureRegistry.unregisterTexture(textureId)
     textureId = nil
   }
+
+  func toggleFlash(){
+    try?captureDevice.lockForConfiguration();
+    if captureDevice.hasTorch {
+      if captureDevice.isTorchActive {
+        captureDevice.torchMode = AVCaptureDevice.TorchMode.off
+      } else {
+        try?captureDevice.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+      }
+    }
+    try?captureDevice.unlockForConfiguration();
+  }
 }
 
 extension QrReader : FlutterTexture {

@@ -83,6 +83,11 @@ public class SwiftQrMobileVisionPlugin: NSObject, FlutterPlugin {
       reader?.stop();
       reader = nil
       result(nil)
+    case "toggleFlash":
+        if reader != nil {
+            reader!.toggleFlash();
+        }
+    
     case "heartBeat":
       //      reader?.heartBeat();
       result(nil)

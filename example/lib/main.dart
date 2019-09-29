@@ -28,10 +28,28 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String qr;
   bool camState = false;
+  QrCamera qrCamera;
 
   @override
   initState() {
     super.initState();
+    qrCamera = new QrCamera(
+      onError: (context, error) => Text(
+        error.toString(),
+        style: TextStyle(color: Colors.red),
+      ),
+      qrCodeCallback: (code) {
+        setState(() {
+          qr = code;
+        });
+      },
+      child: new Container(
+        decoration: new BoxDecoration(
+          color: Colors.transparent,
+          border: Border.all(color: Colors.orange, width: 10.0, style: BorderStyle.solid),
+        ),
+      ),
+    );
   }
 
   @override
@@ -46,45 +64,43 @@ class _MyAppState extends State<MyApp> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Expanded(
-                child: camState
-                    ? new Center(
-                        child: new SizedBox(
-                          width: 300.0,
-                          height: 600.0,
-                          child: new QrCamera(
-                            onError: (context, error) => Text(
-                                  error.toString(),
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                            qrCodeCallback: (code) {
-                              setState(() {
-                                qr = code;
-                              });
-                            },
-                            child: new Container(
-                              decoration: new BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border.all(color: Colors.orange, width: 10.0, style: BorderStyle.solid),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : new Center(child: new Text("Camera inactive"))),
+              child: camState
+                  ? new Center(
+                      child: new SizedBox(
+                        width: 300.0,
+                        height: 500.0,
+                        child: qrCamera,
+                      ),
+                    )
+                  : new Center(child: new Text("Camera inactive")),
+            ),
             new Text("QRCODE: $qr"),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-          child: new Text(
-            "press me",
-            textAlign: TextAlign.center,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          new FloatingActionButton(
+            child: Icon(Icons.flash_on),
+            onPressed: () {
+              qrCamera?.toggleFlash();
+            },
           ),
-          onPressed: () {
-            setState(() {
-              camState = !camState;
-            });
-          }),
+          new FloatingActionButton(
+            child: new Text(
+              "press me",
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {
+              setState(() {
+                camState = !camState;
+              });
+            },
+          ),
+        ],
+      ),
     );
   }
 }
