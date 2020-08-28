@@ -180,8 +180,12 @@ class QrCameraC2 implements QrCamera {
 
     private Integer afMode(CameraCharacteristics cameraCharacteristics) {
 
-        int[] afModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
+        if(cameraCharacteristics.get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE) == null) { 
+            Log.w(TAG, "Minimum focus distance is null ");
+            return null; 
+        } 
 
+        int[] afModes = cameraCharacteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
         if (afModes == null) {
             return null;
         }
